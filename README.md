@@ -25,7 +25,7 @@ Add the plugin to your Biome configuration file (biome.json or biome.jsonc):
 ```jsonc
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "plugins": ["node_modules/biome-plugin-no-type-assertion/no-type-assertion.grit"]
+  "plugins": ["node_modules/biome-plugin-no-type-assertion/plugin.grit"]
 }
 ```
 
@@ -75,9 +75,9 @@ Contributions are welcome! Here's how to get started:
 
 ### Development
 
-The plugin is defined in `no-type-assertion.grit` using the Grit pattern language.
+The plugin is defined in `plugin.grit` using the Grit pattern language.
 
-### Testing
+#### Testing
 
 Run the test suite:
 
@@ -87,7 +87,7 @@ npm test
 
 Tests are located in the `test` directory and use Vitest. Test fixtures can be found in `test/fixtures`.
 
-### Publishing
+#### Publishing
 
 To publish a new version of the plugin:
 
