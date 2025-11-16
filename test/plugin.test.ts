@@ -49,7 +49,7 @@ type BiomeError = {
 	stderr: string;
 };
 
-function execBiome(fixtureFile: "01") {
+function execBiome(fixtureFile: "01" | "02") {
 	const fixturePath = join(__dirname, "fixtures", `${fixtureFile}.ts`);
 	const biomeConfigPath = "./test/biome.config.jsonc";
 
@@ -77,6 +77,35 @@ describe("no-type-assertion plugin", () => {
 	it("detects type assertion such as $expr as $type (e.g. 'const a = 5 as number;')", () => {
 		try {
 			execBiome("01");
+
+			// If we get here, no error was thrown - test should fail
+			expect.fail("Expected biome to report an error for type assertion");
+		} catch (error: unknown) {
+			// We cast because that's the expected error type. If it's different the test will fail anyway
+			const biomeError = error as BiomeError;
+			expect(biomeError.output.length).toBeGreaterThan(0);
+
+			const validOutputs = getValidOutputs(biomeError.output);
+			const output = validOutputs[0];
+			assert(output !== null);
+
+			const pluginError = output.diagnostics.find(
+				(diag) => diag.category === "plugin",
+			);
+			assert(pluginError !== undefined);
+
+			expect(pluginError.description).toContain(
+				"Avoid type assertions. Use type guards or proper typing instead.",
+			);
+			expect(pluginError.location.sourceCode).toContain(
+				"const a = 5 as number;",
+			);
+		}
+	});
+
+	it("detects type assertion such as $expr as $type (e.g. 'const b = <number>5;')", () => {
+		try {
+			execBiome("02");
 
 			// If we get here, no error was thrown - test should fail
 			expect.fail("Expected biome to report an error for type assertion");
