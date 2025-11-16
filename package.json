@@ -1,6 +1,6 @@
 {
   "name": "biome-plugin-no-type-assertion",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A biome plugin that disallows type assertions in TypeScript code.",
   "license": "MIT",
   "author": "Alberto De Agostini",
