@@ -2,9 +2,6 @@
 
 A Biome linter plugin that disallows type assertions in TypeScript code, encouraging the use of type guards and proper typing instead.
 
-TODO: check how to use it from node_modules
-
-
 ## Installation
 
 Install the plugin as a dev dependency:
@@ -28,7 +25,7 @@ Add the plugin to your Biome configuration file (biome.json or biome.jsonc):
 ```jsonc
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "plugins": ["biome-plugin-no-type-assertion/no-type-assertion.grit"]
+  "plugins": ["node_modules/biome-plugin-no-type-assertion/no-type-assertion.grit"]
 }
 ```
 
