@@ -1,0 +1,23 @@
+{
+  "name": "biome-plugin-no-type-assertion",
+  "version": "0.1.0",
+  "description": "A biome plugin that disallows type assertions in TypeScript code.",
+  "license": "MIT",
+  "author": "Alberto De Agostini",
+  "type": "commonjs",
+  "main": "index.js",
+  "files": [
+    "dist",
+    "no-type-assertion.grit",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.5",
+    "@types/node": "24.10.1",
+    "typescript": "5.9.3",
+    "vitest": "4.0.9"
+  }
+}
