@@ -1,13 +1,7 @@
 language js
 
-or {
-	// Match 'as' type assertions: expression as Type
-	`$expr as $type` where {
-		register_diagnostic(span=$expr, message="Avoid type assertions. Use type guards or proper typing instead.", severity="error")
-	},
-	// Match angle-bracket type assertions: <Type>expression
-	`<$type>$expr` where {
-		register_diagnostic(span=$expr, message="Avoid type assertions. Use type guards or proper typing instead.", severity="error")
-	},
-	`<asd>=$expr` where { register_diagnostic(span=$expr, message="eh no ah") }
+// Match 'as' type assertions but exclude 'as const'
+`$expr as $type` where {
+	! $type <: "const",
+	register_diagnostic(span=$expr, message="Avoid type assertions. Use type guards or proper typing instead.", severity="error")
 }

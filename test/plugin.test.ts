@@ -49,7 +49,7 @@ type BiomeError = {
 	stderr: string;
 };
 
-function execBiome(fixtureFile: "01") {
+function execBiome(fixtureFile: "01" | "02") {
 	const fixturePath = join(__dirname, "fixtures", `${fixtureFile}.ts`);
 	const biomeConfigPath = "./test/biome.config.jsonc";
 
@@ -100,6 +100,18 @@ describe("no-type-assertion plugin", () => {
 			expect(pluginError.location.sourceCode).toContain(
 				"const a = 5 as number;",
 			);
+		}
+	});
+
+	it("doesn't detect `as const` as an invalid type assertion", () => {
+		try {
+			execBiome("02");
+
+			// We want to reach here, so no error should be thrown
+			expect(true).toBe(true);
+		} catch (_error: unknown) {
+			console.log(_error);
+			expect.fail("Did not expect biome to report an error for 'as const'");
 		}
 	});
 });
