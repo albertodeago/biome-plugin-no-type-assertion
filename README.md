@@ -35,18 +35,18 @@ The plugin will now check your TypeScript code and report errors when it detects
 
 The plugin detects only one form of type assertions in TypeScript (the most used):
 
-1. **`as` syntax**: `expression as Type`
-   ```ts
-   const a = 5 as number; // ❌ Error
-   ```
+**`as` syntax**: `expression as Type`
+```ts
+const a = 5 as number; // ❌ Error
+const b = ["nope"] as string[]; // ❌ Error
+```
 
 Unfortunately, due to limitations in the Grit pattern language, the plugin cannot currently detect type assertions using the angle-bracket syntax. Examples of unsupported cases include:
-
-2. **Angle-bracket syntax**: `<Type>expression`
-   ```ts
-   const b = <number>5; // ❌ Error
-   console.log(<string>(<unknown>b)); // ❌ Error
-   ```
+```typescript
+// These are "uncommon" type assertions that the plugin at the moment cannot catch
+const b = <number>5;
+console.log(<string>(<unknown>b));
+```
 
 ## Why avoid type assertions?
 
