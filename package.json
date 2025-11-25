@@ -8,7 +8,7 @@
   "main": "index.js",
   "files": [
     "dist",
-    "plugin.grit",
+    "no-type-assertion.grit",
     "README.md"
   ],
   "scripts": {
