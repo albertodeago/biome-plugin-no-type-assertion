@@ -1,4 +1,4 @@
 {
 	"$schema": "../node_modules/@biomejs/biome/configuration_schema.json",
-	"plugins": ["../plugin.grit"]
+	"plugins": ["../no-type-assertion.grit"]
 }
