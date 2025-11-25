@@ -29,6 +29,12 @@ Add the plugin to your Biome configuration file (biome.json or biome.jsonc):
 }
 ```
 
+**To ignore it**
+```ts
+// biome-ignore lint/plugin/no-type-assertion: <reason>
+const a = 5 as number;
+```
+
 The plugin will now check your TypeScript code and report errors when it detects type assertions.
 
 ### What it catches
