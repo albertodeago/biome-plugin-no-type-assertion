@@ -3,48 +3,63 @@ import { execSync } from "node:child_process";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-type BiomeErrorOutput = null | {
-	summary: {
-		changed: number;
-		unchanged: number;
-		matches: number;
-		duration: { secs: number; nanos: number };
-		scannerDuration: { secs: number; nanos: number };
-		errors: number;
-		warnings: number;
-		infos: number;
-		skipped: number;
-		suggestedFixesSkipped: number;
-		diagnosticsNotPrinted: number;
-	};
-	diagnostics: [
-		{
-			category: string;
-			severity: "debug" | "info" | "warning" | "error";
-			description: string;
-			message: [
-				{
-					elements: Array<unknown>;
-					content: string;
-				},
-			];
-			advices: { advices: Array<unknown> };
-			verboseAdvices: { advices: Array<unknown> };
-			location: {
-				path: { file: string };
-				span: [number, number];
-				sourceCode: string;
+// type BiomeErrorOutput = null | {
+// 	summary: {
+// 		changed: number;
+// 		unchanged: number;
+// 		matches: number;
+// 		duration: { secs: number; nanos: number };
+// 		scannerDuration: { secs: number; nanos: number };
+// 		errors: number;
+// 		warnings: number;
+// 		infos: number;
+// 		skipped: number;
+// 		suggestedFixesSkipped: number;
+// 		diagnosticsNotPrinted: number;
+// 	};
+// 	diagnostics: [
+// 		{
+// 			category: string;
+// 			severity: "debug" | "info" | "warning" | "error";
+// 			description: string;
+// 			message: [
+// 				{
+// 					elements: Array<unknown>;
+// 					content: string;
+// 				},
+// 			];
+// 			advices: { advices: Array<unknown> };
+// 			verboseAdvices: { advices: Array<unknown> };
+// 			location: {
+// 				path: { file: string };
+// 				span: [number, number];
+// 				sourceCode: string;
+// 			};
+// 			tags: [];
+// 			source: null;
+// 		},
+// 	];
+// 	command: string;
+// };
+
+type BiomeRDJsonOutput = {
+	source: { name: string; url: string };
+	diagnostics: Array<{
+		code: { value: string };
+		message: string;
+		location: {
+			path: string;
+			range: {
+				start: { line: number; column: number };
+				end: { line: number; column: number };
 			};
-			tags: [];
-			source: null;
-		},
-	];
-	command: string;
+		};
+	}>;
 };
 
 type BiomeError = {
 	status: number;
-	output: Array<null | string>; // strings inside the array can be a stringify of Array<BiomeErrorOutput>;
+	output: Array<null | string>; // strings inside the array can be a stringify of Array<BiomeRDJsonOutput>;
 	stdout: string;
 	stderr: string;
 };
@@ -54,13 +69,13 @@ function execBiome(fixtureFile: "01" | "02") {
 	const biomeConfigPath = "./test/biome.config.jsonc";
 
 	execSync(
-		`npx @biomejs/biome check --config-path=${biomeConfigPath} --reporter=json ${fixturePath}`,
+		`npx @biomejs/biome check --config-path=${biomeConfigPath} --reporter=rdjson ${fixturePath}`,
 		{ encoding: "utf-8", stdio: "pipe" },
 	);
 }
 
 function getValidOutputs(biomeOutput: BiomeError["output"]) {
-	const validOutputs: BiomeErrorOutput[] = biomeOutput
+	const validOutputs: BiomeRDJsonOutput[] = biomeOutput
 		.map((o: string | null) => {
 			if (o === null) return null;
 			try {
@@ -90,16 +105,17 @@ describe("no-type-assertion plugin", () => {
 			assert(output !== null);
 
 			const pluginError = output.diagnostics.find(
-				(diag) => diag.category === "plugin",
+				(diag) => diag.code.value === "plugin",
 			);
 			assert(pluginError !== undefined);
 
-			expect(pluginError.description).toContain(
+			expect(pluginError.message).toContain(
 				"Avoid type assertions. Use type guards or proper typing instead.",
 			);
-			expect(pluginError.location.sourceCode).toContain(
-				"const a = 5 as number;",
-			);
+			expect(pluginError.location.path).toContain("01.ts");
+			expect(pluginError.location.range.start.line).toBe(4);
+			expect(pluginError.location.range.start.column).toBe(11);
+			expect(pluginError.location.range.end.column).toBe(12);
 		}
 	});
 
