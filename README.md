@@ -97,10 +97,13 @@ Tests are located in the `test` directory and use Vitest. Test fixtures can be f
 
 To publish a new version of the plugin:
 
+> [!IMPORTANT]
+> Before publishing, create a token that have permissions to publish packages on this repository, set "bypass two-factor auth" then follow steps below
+
 1. Update the version in `package.json`.
 2. Publish to npm:
    ```sh
-   npm publish
+   NPM_TOKEN=<your_token> npm publish
    ```
 3. Tag the release in GitHub creating a Release with the changes.
 
