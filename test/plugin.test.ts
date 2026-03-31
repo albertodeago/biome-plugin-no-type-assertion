@@ -64,7 +64,7 @@ type BiomeError = {
 	stderr: string;
 };
 
-function execBiome(fixtureFile: "01" | "02") {
+function execBiome(fixtureFile: "01" | "02" | "03") {
 	const fixturePath = join(__dirname, "fixtures", `${fixtureFile}.ts`);
 	const biomeConfigPath = "./test/biome.config.jsonc";
 
@@ -128,6 +128,20 @@ describe("no-type-assertion plugin", () => {
 		} catch (_error: unknown) {
 			console.log(_error);
 			expect.fail("Did not expect biome to report an error for 'as const'");
+		}
+	});
+
+	it("doesn't detect import aliases as type assertions", () => {
+		try {
+			execBiome("03");
+
+			// We want to reach here, so no error should be thrown
+			expect(true).toBe(true);
+		} catch (_error: unknown) {
+			console.log(_error);
+			expect.fail(
+				"Did not expect biome to report an error for import alias 'as'",
+			);
 		}
 	});
 });
