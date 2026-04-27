@@ -1,10 +1,12 @@
 language js
 
-// Match 'as' type assertions
-`$expr as $type` where {
-	// Exclude 'as const' and import aliases
-	! $type <: "const",
-	// Exclude import aliases by checking we're not inside an import statement
-	! $expr <: within `import $_ from $_` ,
-	register_diagnostic(span=$expr, message="Avoid type assertions. Use type guards or proper typing instead.", severity="error")
+// Match TypeScript `as` type assertions only.
+// `$expr as $type` matches the `as` token in any AST construct, including
+// import aliases (`import { foo as bar }`, `import * as ns`) and the alias
+// inside `JsNamedImportSpecifier`. Constraining the captured node to
+// `TsAsExpression()` filters those out so only real type assertions remain.
+`$expr as $type` as $node where {
+    $node <: TsAsExpression(),
+    ! $type <: "const",
+    register_diagnostic(span=$node, message="Avoid type assertions. Use type guards or proper typing instead.", severity="error")
 }

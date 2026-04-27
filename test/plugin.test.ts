@@ -64,7 +64,7 @@ type BiomeError = {
 	stderr: string;
 };
 
-function execBiome(fixtureFile: "01" | "02" | "03") {
+function execBiome(fixtureFile: "01" | "02" | "03" | "04" | "05" | "06") {
 	const fixturePath = join(__dirname, "fixtures", `${fixtureFile}.ts`);
 	const biomeConfigPath = "./test/biome.config.jsonc";
 
@@ -115,7 +115,7 @@ describe("no-type-assertion plugin", () => {
 			expect(pluginError.location.path).toContain("01.ts");
 			expect(pluginError.location.range.start.line).toBe(4);
 			expect(pluginError.location.range.start.column).toBe(11);
-			expect(pluginError.location.range.end.column).toBe(12);
+			expect(pluginError.location.range.end.column).toBe(22);
 		}
 	});
 
@@ -141,6 +141,42 @@ describe("no-type-assertion plugin", () => {
 			console.log(_error);
 			expect.fail(
 				"Did not expect biome to report an error for import alias 'as'",
+			);
+		}
+	});
+
+	it("doesn't detect multi-specifier named imports as type assertions", () => {
+		try {
+			execBiome("04");
+			expect(true).toBe(true);
+		} catch (_error: unknown) {
+			console.log(_error);
+			expect.fail(
+				"Did not expect biome to report an error for multi-specifier import alias 'as'",
+			);
+		}
+	});
+
+	it("doesn't detect namespace imports as type assertions", () => {
+		try {
+			execBiome("05");
+			expect(true).toBe(true);
+		} catch (_error: unknown) {
+			console.log(_error);
+			expect.fail(
+				"Did not expect biome to report an error for namespace import 'as'",
+			);
+		}
+	});
+
+	it("doesn't detect export aliases as type assertions", () => {
+		try {
+			execBiome("06");
+			expect(true).toBe(true);
+		} catch (_error: unknown) {
+			console.log(_error);
+			expect.fail(
+				"Did not expect biome to report an error for export alias 'as'",
 			);
 		}
 	});
